@@ -11,7 +11,7 @@ from torch import optim
 
 from eval import eval_net
 from unet import UNet
-from utils import get_ids, split_ids, split_train_val, get_imgs_and_masks, batch
+from utils import get_ids, split_ids, split_train_val, get_imgs_and_masks, batch, copy_imgs, unzip
 
 def train_net(net,
               epochs=5,
@@ -25,6 +25,11 @@ def train_net(net,
     dir_img = 'data/train/'
     dir_mask = 'data/train_masks/'
     dir_checkpoint = 'checkpoints/'
+
+    competition_dir = os.path.expanduser('~/.kaggle/competitions/ultrasound-nerve-segmentation')
+
+    unzip(competition_dir)
+    copy_imgs(competition_dir + "/train", dir_img, dir_mask)
 
     ids = get_ids(dir_img)
     ids = split_ids(ids)
