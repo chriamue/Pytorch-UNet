@@ -2,8 +2,8 @@
 import os
 import sys
 import yaml
-from train import train_net
-from unet import UNet
+from .train import train_net
+from .unet import UNet
 
 
 def main(run='run', results_dir="results/", batch_size=1, epochs=5, config={}):

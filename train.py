@@ -9,9 +9,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import optim
 
-from eval import eval_net
-from unet import UNet
-from utils import get_ids, split_ids, split_train_val, get_imgs_and_masks, batch, copy_imgs, unzip
+from .eval import eval_net
+from .unet import UNet
+from .utils import get_ids, split_ids, split_train_val, get_imgs_and_masks, batch, copy_imgs, unzip
 
 def train_net(net,
               epochs=5,

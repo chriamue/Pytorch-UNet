@@ -3,9 +3,9 @@ from PIL import Image
 
 import torch
 
-from predict import predict_img
-from utils import rle_encode
-from unet import UNet
+from .predict import predict_img
+from .utils import rle_encode
+from .unet import UNet
 
 
 def submit(net, gpu=False):

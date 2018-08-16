@@ -4,4 +4,4 @@ numpy
 Pillow
 torch
 torchvision
-pyml
+pyaml

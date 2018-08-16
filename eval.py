@@ -1,7 +1,7 @@
 import torch
 import torch.nn.functional as F
 
-from dice_loss import dice_coeff
+from .dice_loss import dice_coeff
 
 
 def eval_net(net, dataset, gpu=False):
