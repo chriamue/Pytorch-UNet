@@ -20,11 +20,12 @@ def train_net(net,
               val_percent=0.05,
               save_cp=True,
               gpu=False,
-              img_scale=0.5):
+              img_scale=0.5,
+              results_dir="results/"):
 
     dir_img = 'data/train/'
     dir_mask = 'data/train_masks/'
-    dir_checkpoint = 'checkpoints/'
+    dir_checkpoint = results_dir# + 'checkpoints/'
 
     competition_dir = os.path.expanduser('~/.kaggle/competitions/ultrasound-nerve-segmentation')
 

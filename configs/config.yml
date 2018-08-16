@@ -1,0 +1,6 @@
+run1:
+  net: 'pytorch'
+  batch_size: 10
+  epochs: 1
+  learn_rate: 0.001
+  gpu: true

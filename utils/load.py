@@ -34,18 +34,19 @@ def unzip(data_folder):
         print('Test Data extracted.')
 
 def copy_imgs(dir, dir_img, dir_masks):
-    for filename in os.listdir(dir):
-        if filename.endswith("mask.tif"):
-            _image = os.path.join(dir, filename)
-            assert os.path.isfile(_image)
-            dst = os.path.join(dir_masks, filename)
-            copyfile(_image, dst)
-        elif filename.endswith(".tif"):
-            _image = os.path.join(dir, filename)
-            dst = os.path.join(dir_img, filename)
-            copyfile(_image, dst)
-        else:
-            continue
+    if not os.path.exists(dir_img):
+        for filename in os.listdir(dir):
+            if filename.endswith("mask.tif"):
+                _image = os.path.join(dir, filename)
+                assert os.path.isfile(_image)
+                dst = os.path.join(dir_masks, filename)
+                copyfile(_image, dst)
+            elif filename.endswith(".tif"):
+                _image = os.path.join(dir, filename)
+                dst = os.path.join(dir_img, filename)
+                copyfile(_image, dst)
+            else:
+                continue
 
 def get_ids(dir):
     """Returns a list of the ids in the directory"""
