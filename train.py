@@ -8,6 +8,7 @@ import torch.backends.cudnn as cudnn
 import torch.nn as nn
 import torch.nn.functional as F
 from torch import optim
+from tensorboardX import SummaryWriter
 
 from .eval import eval_net
 from .unet import UNet
@@ -28,6 +29,8 @@ def train_net(net,
     dir_checkpoint = results_dir# + 'checkpoints/'
 
     competition_dir = os.path.expanduser('~/.kaggle/competitions/ultrasound-nerve-segmentation')
+
+    writer = SummaryWriter(log_dir=results_dir)
 
     unzip(competition_dir)
     copy_imgs(competition_dir + "/train", dir_img, dir_mask)
@@ -87,7 +90,9 @@ def train_net(net,
             loss = criterion(masks_probs_flat, true_masks_flat)
             epoch_loss += loss.item()
 
-            print('{0:.4f} --- loss: {1:.6f}'.format(i * batch_size / N_train, loss.item()))
+            if i % 10 == 1:
+                print('{0:.4f} --- loss: {1:.6f}'.format(i * batch_size / N_train, loss.item()))
+                writer.add_scalar(results_dir+'/loss', loss.item(), epoch)
 
             optimizer.zero_grad()
             loss.backward()
@@ -96,13 +101,17 @@ def train_net(net,
         print('Epoch finished ! Loss: {}'.format(epoch_loss / i))
 
         if 1:
-            val_dice = eval_net(net, val, gpu)
+            val_dice = eval_net(net, val, gpu, writer, epoch)
             print('Validation Dice Coeff: {}'.format(val_dice))
+            writer.add_scalar(results_dir+'/val_dice', val_dice, epoch)
+            #writer.add_graph(net, val)
 
         if save_cp:
             torch.save(net.state_dict(),
                        dir_checkpoint + 'CP{}.pth'.format(epoch + 1))
             print('Checkpoint {} saved !'.format(epoch + 1))
+
+    writer.close()
 
 
 
@@ -127,7 +136,7 @@ def get_args():
 if __name__ == '__main__':
     args = get_args()
 
-    net = UNet(n_channels=3, n_classes=1)
+    net = UNet(n_channels=3, n_classes=255)
 
     if args.load:
         net.load_state_dict(torch.load(args.load))

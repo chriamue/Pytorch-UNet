@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from .dice_loss import dice_coeff
 
 
-def eval_net(net, dataset, gpu=False):
+def eval_net(net, dataset, gpu=False, writer=None, epoch=0):
     """Evaluation without the densecrf with the dice coefficient"""
     tot = 0
     for i, b in enumerate(dataset):
@@ -20,6 +20,10 @@ def eval_net(net, dataset, gpu=False):
 
         mask_pred = net(img)[0]
         mask_pred = (F.sigmoid(mask_pred) > 0.5).float()
+        if not writer is None and i == 3:
+            writer.add_image(tag='image', img_tensor=img, global_step=epoch)
+            writer.add_image(tag='label', img_tensor=true_mask, global_step=epoch)
+            writer.add_image(tag='prediction', img_tensor=mask_pred, global_step=epoch)
 
         tot += dice_coeff(mask_pred, true_mask).item()
     return tot / i
