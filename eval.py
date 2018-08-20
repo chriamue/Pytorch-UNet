@@ -20,10 +20,12 @@ def eval_net(net, dataset, gpu=False, writer=None, epoch=0):
 
         mask_pred = net(img)[0]
         mask_pred = (F.sigmoid(mask_pred) > 0.5).float()
-        if not writer is None and i == 3:
+        if not writer is None and i == 1:
             writer.add_image(tag='image', img_tensor=img, global_step=epoch)
-            writer.add_image(tag='label', img_tensor=true_mask, global_step=epoch)
-            writer.add_image(tag='prediction', img_tensor=mask_pred, global_step=epoch)
+            writer.add_image(
+                tag='label', img_tensor=true_mask/255, global_step=epoch)
+            writer.add_image(tag='prediction',
+                             img_tensor=mask_pred, global_step=epoch)
 
         tot += dice_coeff(mask_pred, true_mask).item()
     return tot / i

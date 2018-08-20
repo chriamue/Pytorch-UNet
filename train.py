@@ -14,6 +14,7 @@ from .eval import eval_net
 from .unet import UNet
 from .utils import get_ids, split_ids, split_train_val, get_imgs_and_masks, batch, copy_imgs, unzip
 
+
 def train_net(net,
               epochs=5,
               batch_size=1,
@@ -26,9 +27,10 @@ def train_net(net,
 
     dir_img = 'data/train/'
     dir_mask = 'data/train_masks/'
-    dir_checkpoint = results_dir# + 'checkpoints/'
+    dir_checkpoint = results_dir  # + 'checkpoints/'
 
-    competition_dir = os.path.expanduser('~/.kaggle/competitions/ultrasound-nerve-segmentation')
+    competition_dir = os.path.expanduser(
+        '~/.kaggle/competitions/ultrasound-nerve-segmentation')
 
     writer = SummaryWriter(log_dir=results_dir)
 
@@ -65,8 +67,10 @@ def train_net(net,
         print('Starting epoch {}/{}.'.format(epoch + 1, epochs))
 
         # reset the generators
-        train = get_imgs_and_masks(iddataset['train'], dir_img, dir_mask, img_scale)
-        val = get_imgs_and_masks(iddataset['val'], dir_img, dir_mask, img_scale)
+        train = get_imgs_and_masks(
+            iddataset['train'], dir_img, dir_mask, img_scale)
+        val = get_imgs_and_masks(
+            iddataset['val'], dir_img, dir_mask, img_scale)
 
         epoch_loss = 0
 
@@ -91,8 +95,9 @@ def train_net(net,
             epoch_loss += loss.item()
 
             if i % 10 == 1:
-                print('{0:.4f} --- loss: {1:.6f}'.format(i * batch_size / N_train, loss.item()))
-                writer.add_scalar(results_dir+'/loss', loss.item(), epoch)
+                print('{0:.4f} --- loss: {1:.6f}'.format(i *
+                                                         batch_size / N_train, loss.item()))
+                writer.add_scalar('loss', loss.item(), epoch)
 
             optimizer.zero_grad()
             loss.backward()
@@ -103,7 +108,7 @@ def train_net(net,
         if 1:
             val_dice = eval_net(net, val, gpu, writer, epoch)
             print('Validation Dice Coeff: {}'.format(val_dice))
-            writer.add_scalar(results_dir+'/val_dice', val_dice, epoch)
+            writer.add_scalar('val_dice', val_dice, epoch)
             #writer.add_graph(net, val)
 
         if save_cp:
@@ -112,7 +117,6 @@ def train_net(net,
             print('Checkpoint {} saved !'.format(epoch + 1))
 
     writer.close()
-
 
 
 def get_args():
@@ -132,6 +136,7 @@ def get_args():
 
     (options, args) = parser.parse_args()
     return options
+
 
 if __name__ == '__main__':
     args = get_args()
