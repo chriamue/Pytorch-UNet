@@ -14,18 +14,18 @@ def submit(net, gpu=False):
 
     N = len(list(os.listdir(dir)))
     with open('SUBMISSION.csv', 'a') as f:
-        f.write('img,rle_mask\n')
+        f.write('img,pixels\n')
         for index, i in enumerate(os.listdir(dir)):
             print('{}/{}'.format(index, N))
 
             img = Image.open(dir + i)
 
-            mask = predict_img(net, img, gpu)
+            mask = predict_img(net, img, use_gpu=gpu)
             enc = rle_encode(mask)
-            f.write('{},{}\n'.format(i, ' '.join(map(str, enc))))
+            f.write('{},{}\n'.format(i.split(".")[0], ' '.join(map(str, enc))))
 
 
 if __name__ == '__main__':
     net = UNet(3, 1).cuda()
-    net.load_state_dict(torch.load('MODEL.pth'))
+    net.load_state_dict(torch.load('results/run1_pytorch/CP50.pth'))
     submit(net, True)

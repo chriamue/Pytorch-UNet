@@ -19,10 +19,11 @@ def predict_img(net,
                 out_threshold=0.5,
                 use_dense_crf=True,
                 use_gpu=False):
+    
 
     img_height = full_img.size[1]
     img_width = full_img.size[0]
-
+    full_img = full_img.convert('RGB')
     img = resize_and_crop(full_img, scale=scale_factor)
     img = normalize(img)
 
@@ -33,7 +34,6 @@ def predict_img(net,
 
     X_left = torch.from_numpy(left_square).unsqueeze(0)
     X_right = torch.from_numpy(right_square).unsqueeze(0)
-    
     if use_gpu:
         X_left = X_left.cuda()
         X_right = X_right.cuda()
