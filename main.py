@@ -23,8 +23,14 @@ def main(run='run', results_dir="results/", batch_size=1, epochs=5, config={}, m
               img_scale=0.5,
               results_dir=results_dir)
     if mode == '--submit':
-        net.load_state_dict(torch.load('results/run1_pytorch/CP50.pth'))
-        submit(net, True)
+        netfile = [x for x in os.listdir(results_dir) if x.endswith('.pth')]
+        if len(netfile) > 0:
+            netfile = sorted(netfile, key=lambda s: int(s[2:-4]))
+            netfile.reverse()
+            netfile = results_dir + netfile[0]
+            print('Predicting on file: ' ,netfile)
+            net.load_state_dict(torch.load(netfile))
+            submit(net, gpu=config['gpu'], results_dir=results_dir)
 
 
 
