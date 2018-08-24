@@ -30,7 +30,7 @@ def main(run='run', results_dir="results/", batch_size=1, epochs=5, config={}, m
             netfile = results_dir + netfile[0]
             print('Predicting on file: ' ,netfile)
             net.load_state_dict(torch.load(netfile))
-            submit(net, gpu=config['gpu'], results_dir=results_dir)
+            submit(net, gpu=config['gpu'], results_dir=results_dir, save=False)
 
 
 
