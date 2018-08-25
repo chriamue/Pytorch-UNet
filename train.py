@@ -77,7 +77,6 @@ def train_net(net,
         for i, b in enumerate(batch(train, batch_size)):
             imgs = np.array([i[0] for i in b]).astype(np.float32)
             true_masks = np.array([i[1] for i in b])
-            print(imgs.shape)
             imgs = torch.from_numpy(imgs)
             true_masks = torch.from_numpy(true_masks)
 
@@ -94,14 +93,27 @@ def train_net(net,
             loss = criterion(masks_probs_flat, true_masks_flat)
             epoch_loss += loss.item()
 
-            if i % 10 == 1:
+            if i % 50 == 1:
+                global_step = i+(epoch*N_train)
                 print('{0:.4f} --- loss: {1:.6f}'.format(i *
                                                          batch_size / N_train, loss.item()))
-                writer.add_scalar('loss', loss.item(), epoch)
+                writer.add_scalar('loss', loss.item(), global_step)
 
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
+
+            if i%100==1:
+                global_step = i+(epoch*N_train)
+                writer.add_image('image', imgs[0], global_step=global_step)
+                writer.add_image('mask', true_masks[0], global_step=global_step)
+                writer.add_image('predicted', masks_probs[0], global_step=global_step)
+                if save_cp:
+                    torch.save(net.state_dict(),
+                            dir_checkpoint + 'CP{}.pth'.format(epoch + 1))
+                    print('Checkpoint {} saved !'.format(epoch + 1))
+
+
 
         print('Epoch finished ! Loss: {}'.format(epoch_loss / i))
 
