@@ -50,7 +50,7 @@ def copy_imgs(dir, dir_img, dir_masks):
 
 def get_ids(dir):
     """Returns a list of the ids in the directory"""
-    return (f[:-4] for f in os.listdir(dir))
+    return (f[:-4] for f in os.listdir(dir) if "mask" not in f)
 
 
 def split_ids(ids, n=2):
@@ -77,12 +77,12 @@ def get_imgs_and_masks(ids, dir_img, dir_mask, scale):
     imgs_switched = map(hwc_to_chw, imgs)
     imgs_normalized = map(normalize, imgs_switched)
 
-    masks = to_cropped_imgs(ids, dir_mask, '_mask.tif', scale)
+    masks = to_cropped_imgs(ids, dir_img, '_mask.tif', scale)
     return zip(imgs_normalized, masks)
 
 
 def get_full_img_and_mask(id, dir_img, dir_mask):
     im = Image.open(dir_img + id + '.tif')
     im = im.convert('RGB')
-    mask = Image.open(dir_mask + id + '_mask.tif')
+    mask = Image.open(dir_img + id + '_mask.tif')
     return np.array(im), np.array(mask)
