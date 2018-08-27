@@ -92,6 +92,7 @@ def train_net(net,
 
             loss = criterion(masks_probs_flat, true_masks_flat)
             epoch_loss += loss.item()
+            # print('{0:.4f} '.format(loss.item()))
 
             if i % 50 == 1:
                 global_step = i+(epoch*N_train)
